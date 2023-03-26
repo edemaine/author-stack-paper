@@ -1,0 +1,31 @@
+Comedy paper for SIGTBD
+
+Introduction
+Mention supercollaboration, not having to worry about authorship order, no uncomfortable debates
+Standard solutions: alphabetical order, "joint first author" footnote
+Mention significance to being first author: X et al.
+Workaround is to list all names, but hard for papers with lots of authors; cite 12- and 100-author examples
+Studies about academics with earlier last names in economics
+Reverse alphabetical on some papers (find an example, in theory?, to cite)
+
+Solution: Superpose authors for true "no order", everyone can be first
+X et al. -> XYZ superposed
+Example papers cited (my own papers with 12+ authors, ChatGPT and human genome project with 100+)
+
+Technology
+How to do it in LaTeX, BibTeX, HTML
+Hover tooltip in LaTeX PDF, HTML
+Still readable when converted to ASCII, so e.g. Google Scholar / citeseer / researchgate will get it right?
+Maybe include trailing comma for this?
+Experiment with multiple colors, though all-black is probably "most fair" (no stacking order) 
+Maybe colors + transparency with proper blending would order neutral?
+Randomized ordering during compilation (nice for arXiv papers)
+Black + transparency may work well
+Different fonts better? Sans-serif? Thinner? Inverse proportional to number of authors?
+
+Additional benefits:
+Reduces number of pages in bibliography
+Great for conference page limits
+Also global warming (for people who print papers)
+
+Paper itself has 2 authors, Erik Demaine and Martin Demaine
