@@ -25,24 +25,25 @@
 
 % Usage: \textstack{item1; item2; ...}
 % Or: \textstack[sep]{item1 sep item2 sep ...}
+% Expands to \vbox{\hbox{item1}\vskip-\baselineskip\hbox{item2}...},
+% plus a PDF tooltip.
 % Loop iteration based on https://tex.stackexchange.com/a/159177/245104
 \makeatletter
 \newcommand\textstack[2][;]{%
-  \def\textstack@sep{}% becomes \vss after one step
   % Append separator (#1) and \@eol to end of input:
   \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
   % Split into first component (##1) up to separator (#1), and rest (##2):
   \def\textstack@step##1#1##2\@eol{%
-    \textstack@sep % possible \vss to overlap with previous item
-    \hbox{\smash{\ignorespaces ##1\unskip}}%
-    \def\textstack@sep{\vss}%
-    \ifx\@eol##2\@eol\else\textstack@step##2\@eol\fi}%
-  % Make full-height overall vertical size of stack
-  \strut
+    \hbox{\ignorespaces ##1\unskip}%
+    \ifx\@eol##2\@eol\else
+      % More steps: unwind vertical space and continue
+      \vskip-\baselineskip
+      \textstack@step##2\@eol
+    \fi}%
   % Tooltip with full author list
   \pdftooltip{%
-    % Crush contents to zero vertical height
-    \vbox to 0pt{\textstack@append{#2}}%
+    % Wrap stack in \vbox
+    \vbox{\textstack@append{#2}}%
   }{#2}%
 }
 \makeatother
