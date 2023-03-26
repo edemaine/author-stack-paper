@@ -22,11 +22,12 @@
 \let\textstack=\relax
 
 \usepackage[final]{pdfcomment}
+\usepackage{accsupp}
 
 % Usage: \textstack{item1; item2; ...}
 % Or: \textstack[sep]{item1 sep item2 sep ...}
 % Expands to \vbox{\hbox{item1}\vskip-\baselineskip\hbox{item2}...},
-% plus a PDF tooltip.
+% plus a PDF tooltip and copy/paste override with original text.
 % Loop iteration based on https://tex.stackexchange.com/a/159177/245104
 \makeatletter
 \newcommand\textstack[2][;]{%
@@ -42,8 +43,10 @@
     \fi}%
   % Tooltip with full author list
   \pdftooltip{%
-    % Wrap stack in \vbox
-    \vbox{\textstack@append{#2}}%
+    \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}
+      % Wrap stack in \vbox
+      \vbox{\textstack@append{#2}}%
+    \EndAccSupp{}
   }{#2}%
 }
 \makeatother
