@@ -1,7 +1,7 @@
 \documentclass{sigtbd17-style}
 % \documentclass[SIGTBD-cameraready]{sigplanconf-SIGTBD16}
 
-{\makeatletter \gdef \@copyrightdata {\hspace{-2.5em}\protect\namestack{Erik Demaine;Martin Demaine}}}
+{\makeatletter \gdef \@copyrightdata {\hspace{-2.5em}\protect\namestack{Erik D. Demaine; Martin L. Demaine}}}
 
 %
 % the following standard packages may be helpful, but are not required
@@ -43,10 +43,10 @@
     \fi}%
   % Tooltip with full author list
   \pdftooltip{%
-    \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}
+    \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}%
       % Wrap stack in \vbox
       \vbox{\textstack@append{#2}}%
-    \EndAccSupp{}
+    \EndAccSupp{}%
   }{#2}%
 }
 \makeatother
@@ -63,7 +63,7 @@
 % any author declaration will be ignored  when using 'SIGTBD' option (for double blind review)
 %
 
-\authorinfo{\namestack{Erik Demaine; Martin Demaine}}
+\authorinfo{\namestack{Erik D. Demaine; Martin L. Demaine}}
 {\makebox{Computer Science and Artificial Intelligence Laboratory} \\
 \makebox{Massachusetts Institute of Technology}  \\
 \makebox{Cambridge, MA 02139}}
@@ -72,54 +72,136 @@
 \maketitle
 
 \begin{abstract}
-  We propose a new technology for writing author names on papers
-  and in bibliographies, which places \emph{every author as a first author},
-  superimposed.
+  We propose a new standard for writing author names on papers
+  and in bibliographies, which places
+  \emph{every author as a first author --- superimposed}.
   This approach enables authors to write papers as true equals,
-  without any advantage given to e.g.\ whoever's name
-  happens to be alphabetically first.
+  without any advantage given to whoever's name
+  happens to come first alphabetically (for example).
+  We develop the technology for implementing this standard
+  in \LaTeX, \textsc{Bib}\TeX, and HTML;
+  show several examples; and discuss further advantages.
 \end{abstract}
 
 \section{Introduction}
 
-intro here.
+\paragraph{The problem.}
+
+Authorship order makes for fraught debates in academia.
+Perhaps the most common standard is to list authors in reverse order by
+significance of contributions to the work.
+But this quantity is usually difficult to measure,
+and can lead to uncomfortable conversations, arguments, or even feuds.
+For example, are an advisor's leadership and high-level ideas
+more or less important than a student's technical solutions?
+Is one author's technical work more or less important than
+another author's writing of the paper?
+Even if the answer to these questions are clear to you
+(and equal among all authors), authors' contributions are rarely so clearcut.
+And what if the contributions are roughly equal?
+
+In some disciplines, the order has additional codified meanings.
+For example, many natural sciences use the last author position to indicate the
+research supervisor (principle investigator) whose lab housed the work.
+But what if multiple people serve that role, as research becomes
+increasingly collaborative research?
+
+\paragraph{Existing solutions.}
+
+Some disciplines --- such as economics, mathematics, and
+theoretical computer science --- shun the idea of determining authorship order
+and instead use an algorithmically determined order:
+alphabetically increasing by last name.
+In particular, the alphabetical standard is a central tenet of
+\emph{supercollaborative} research \cite{supercollaboration},
+where researchers brainstorm to solve problems as equals,
+and everyone decides for themselves whether they contributed
+enough to be an author.
+The motivation is that it is difficult to compare contributions when
+brainstorming, as failed ideas are often as important as successful ideas,
+and ideas are often as important as technical work.
+Agreeing to alphabetical authorship ahead of time guarantees that everyone
+will be recognized for their contributions, without ever having to argue
+about who contributed what.
+
+The alphabetical approach avoids any uncomfortable conversations and arguments,
+and works well when contributions are roughly equal or difficult to compare.
+But in practice, we have occasionally seen authors who feel slighted
+by being listed late despite having contributed significantly more than others
+(e.g., having led the research and/or paper).
+
+Other disciplines offer footnotes to clarify authorship order. For example,
+multiple authors can be marked ``joint first author'' to indicate
+equal contributions, or multiple authors can be marked as having
+``jointly supervised'' the work.
+In these cases, the authors in the same category
+are normally listed alphabetically.
+When all authors contributed roughly equally,
+many papers include a footnote explaining that authorship order is alphabetical
+(especially in publication venues where this is not the standard).
+\emph{Nature} encourages including author contribution statements which
+specify each author's exact contribution to the work.
+% https://www.nature.com/nature-portfolio/editorial-policies/authorship#author-contribution-statements
+
+\paragraph{Bias.}
+
+A fundamental limitation to \emph{any} approach that lists the authors
+in a fixed order arises when citing papers with several authors.
+In the body of a paper (as opposed to the bibliography), it is most common
+to write ``X et al.~[\#]''\ when referring to a paper [\#]
+whose first author's last name is X.
+In some styles such as APA, this is built into the citation itself,
+e.g., (X et al., 2023).
+As a result, author X gets their name effectively promoted with every citation,
+which is inconsistent with multiple or all authors being equal.
+
+In our own writing, we try to avoid this practice, and instead
+write all authors' last names whenever citing a paper,
+e.g., ``X, Y, and Z~[\#]''.
+But this workaround becomes impractical for references with ten or more authors.
+
+Beyond listing authors when citing papers,
+other biases arise from alphabetical ordering specifically.
+Bibliography styles where papers are sorted alphabetically (such as ACM's)
+cluster together papers with the same first author, further promoting people
+who have alphabetically early last names so are more likely to be first.
+And of course fields whose standard is not alphabetical ordering
+unfairly judge authorship order of papers that do.
+
+These effects are collectively referred to as
+\emph{alphabetical discrimination} \cite{alphabetical-discrimination}.
+Several studies have explored this phenomenon, and find evidence that
+people with alphabetically earlier last names are more likely to succeed
+academically.
+The present authors have sometimes uncomfortably wondered whether they have
+benefitted in this way, with last names starting with ``D''.
+
+%% https://www.csail.mit.edu/people/?roleFacets=Principal%20Investigators,Core%2FDual,Associates,Emeritus
+%counts={};
+%Array.from(
+%    document.querySelectorAll('.cs-people-result__card__name')
+%).map(x => x.innerText.split(/\s+/).at(-1)[0])
+%.forEach(x => counts[x] = '*' + (counts[x] ?? ''))
+%counts
+
+\section{Solution}
+
+Our proposed solution is a new standard for listing authors on a paper:
+instead of any ordered list, write all author names on top of each other.
+For example, instead of ``Erik Demaine and Martin Demaine'' (alphabetical),
+we write \namestack{Erik Demaine; Martin Demaine}.
+In this way, we achieve the true ideal of an unordered list of equal authors,
+where everyone comes first.
+
+In settings where authors did not contribute equally, we can generalize to
+writing each group of equal authors as an overlapping stack of names.
+For example, when we want to distinguish multiple first authors,
+multiple ``middle'' authors, and multiple supervising authors,
+we can write three distinct groups of authors,
+where each group is overlapping.
 
 
+\bibliography{paper}
 \bibliographystyle{abbrvnat}
-
-% We recommend that you use BibTeX.  The inlined bibitems below are
-% used to keep this template to a single file.
-\begin{thebibliography}{}
-\softraggedright
-
-\bibitem[Backus et~al.(1960)]{Backus:60}
-J.~W. Backus, F.~L. Bauer, J.~Green, C.~Katz, J.~McCarthy, A.~J. Perlis,
-  H.~Rutishauser, K.~Samelson, B.~Vauquois, J.~H. Wegstein, A.~van Wijngaarden,
-  and M.~Woodger.
-\newblock Report on the algorithmic language ALGOL 60.
-\newblock \emph{Commun. ACM}, 3\penalty0 (5):\penalty0 299--314, May 1960.
-\newblock ISSN 0001-0782.
-\newblock \doi{10.1145/367236.367262}.
-
-\bibitem[Collins(1960)]{Collins:60}
-G.~E. Collins.
-\newblock A method for overlapping and erasure of lists.
-\newblock \emph{Commun. ACM}, 3\penalty0 (12):\penalty0 655--657, December
-  1960.
-\newblock \doi{10.1145/367487.367501}
-
-\bibitem[Lamport(1994)]{Lamport:94}
-L.~Lamport.
-\newblock \emph{{\LaTeX: A Document Preparation System}}.
-\newblock Addison-Wesley, Reading, Massachusetts, 2nd edition, 1994.
-
-\bibitem[McCarthy(1960)]{McCarthy:60}
-J.~McCarthy.
-\newblock Recursive functions of symbolic expressions and their computation by
-  machine, part {I}.
-\newblock \emph{Commun. ACM}, 3\penalty0 (4):\penalty0 184--195, April 1960.
-\newblock \doi{10.1145/367177.367199}
-
-\end{thebibliography}
 
 \end{document}
