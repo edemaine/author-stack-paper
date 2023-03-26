@@ -1,0 +1,121 @@
+\documentclass{sigtbd17-style}
+% \documentclass[SIGTBD-cameraready]{sigplanconf-SIGTBD16}
+
+{\makeatletter \gdef \@copyrightdata {\hspace{-2.5em}\protect\namestack{Erik Demaine;Martin Demaine}}}
+
+%
+% the following standard packages may be helpful, but are not required
+%
+\usepackage{courier}            % standard fixed width font
+\usepackage[scaled]{helvet} % see www.ctan.org/get/macros/latex/required/psnfss/psnfss2e.pdf
+\usepackage{url}                  % format URLs
+\usepackage{listings}          % format code
+\usepackage{enumitem}      % adjust spacing in enums
+\usepackage[colorlinks=true,allcolors=blue,breaklinks,draft=false]{hyperref}   % hyperlinks, including DOIs and URLs in bibliography
+% known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
+\newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
+
+% Usage: \textstack{\textitem{item1}\textitem{item2}...}
+\newcommand\textstack[1]{\strut\vbox to 0pt{\def\textstacksep{}#1}\ignorespaces}
+\newcommand\textitem[1]{\textstacksep\hbox{\smash{#1}}\def\textstacksep{\vss}\ignorespaces}
+
+\let\textstack=\relax
+
+\usepackage[final]{pdfcomment}
+
+% Usage: \textstack{item1; item2; ...}
+% Or: \textstack[sep]{item1 sep item2 sep ...}
+% Loop iteration based on https://tex.stackexchange.com/a/159177/245104
+\makeatletter
+\newcommand\textstack[2][;]{%
+  \def\textstack@sep{}% becomes \vss after one step
+  % Append separator (#1) and \@eol to end of input:
+  \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
+  % Split into first component (##1) up to separator (#1), and rest (##2):
+  \def\textstack@step##1#1##2\@eol{%
+    \textstack@sep % possible \vss to overlap with previous item
+    \hbox{\smash{\ignorespaces ##1\unskip}}%
+    \def\textstack@sep{\vss}%
+    \ifx\@eol##2\@eol\else\textstack@step##2\@eol\fi}%
+  % Make full-height overall vertical size of stack
+  \strut
+  % Tooltip with full author list
+  \pdftooltip{%
+    % Crush contents to zero vertical height
+    \vbox to 0pt{\textstack@append{#2}}%
+  }{#2}%
+}
+\makeatother
+
+\usepackage{transparent}
+\newcommand\namestack[1]{\texttransparent{0.666}{\textstack{#1}}}
+
+
+\begin{document}
+
+\title{Every Author as First Author}
+
+%
+% any author declaration will be ignored  when using 'SIGTBD' option (for double blind review)
+%
+
+\authorinfo{\namestack{Erik Demaine; Martin Demaine}}
+{\makebox{Computer Science and Artificial Intelligence Laboratory} \\
+\makebox{Massachusetts Institute of Technology}  \\
+\makebox{Cambridge, MA 02139}}
+{\namestack{edemaine;mdemaine}@mit.edu}
+
+\maketitle
+
+\begin{abstract}
+  We propose a new technology for writing author names on papers
+  and in bibliographies, which places \emph{every author as a first author},
+  superimposed.
+  This approach enables authors to write papers as true equals,
+  without any advantage given to e.g.\ whoever's name
+  happens to be alphabetically first.
+\end{abstract}
+
+\section{Introduction}
+
+intro here.
+
+
+\bibliographystyle{abbrvnat}
+
+% We recommend that you use BibTeX.  The inlined bibitems below are
+% used to keep this template to a single file.
+\begin{thebibliography}{}
+\softraggedright
+
+\bibitem[Backus et~al.(1960)]{Backus:60}
+J.~W. Backus, F.~L. Bauer, J.~Green, C.~Katz, J.~McCarthy, A.~J. Perlis,
+  H.~Rutishauser, K.~Samelson, B.~Vauquois, J.~H. Wegstein, A.~van Wijngaarden,
+  and M.~Woodger.
+\newblock Report on the algorithmic language ALGOL 60.
+\newblock \emph{Commun. ACM}, 3\penalty0 (5):\penalty0 299--314, May 1960.
+\newblock ISSN 0001-0782.
+\newblock \doi{10.1145/367236.367262}.
+
+\bibitem[Collins(1960)]{Collins:60}
+G.~E. Collins.
+\newblock A method for overlapping and erasure of lists.
+\newblock \emph{Commun. ACM}, 3\penalty0 (12):\penalty0 655--657, December
+  1960.
+\newblock \doi{10.1145/367487.367501}
+
+\bibitem[Lamport(1994)]{Lamport:94}
+L.~Lamport.
+\newblock \emph{{\LaTeX: A Document Preparation System}}.
+\newblock Addison-Wesley, Reading, Massachusetts, 2nd edition, 1994.
+
+\bibitem[McCarthy(1960)]{McCarthy:60}
+J.~McCarthy.
+\newblock Recursive functions of symbolic expressions and their computation by
+  machine, part {I}.
+\newblock \emph{Commun. ACM}, 3\penalty0 (4):\penalty0 184--195, April 1960.
+\newblock \doi{10.1145/367177.367199}
+
+\end{thebibliography}
+
+\end{document}
