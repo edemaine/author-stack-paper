@@ -227,13 +227,13 @@ FUNCTION {format.names}
       nameptr #1 >
         { namesleft #1 >
             { "; " * t * }
-            { numnames #2 >
-                { ";" * }
-                'skip$
-              if$
+            { %numnames #2 >
+              %  { ";" * }
+              %  'skip$
+              %if$
               t "others" =
                 { " et~al." * }
-                { " and " * t * }
+                { "; " * t * }
               if$
             }
           if$
@@ -318,19 +318,20 @@ FUNCTION {format.full.names}
       "{vv~}{ll}" format.name$ 't :=
       nameptr #1 >
         {
-          namesleft #1 >
-            { "; " * t * }
-            {
-              numnames #2 >
-                { "; " * }
-                'skip$
-              if$
-              t "others" =
-                { " et~al." * }
-                { t * }
-              if$
-            }
-          if$
+          "; " * t *
+          %namesleft #1 >
+          %  { "; " * t * }
+          %  {
+          %    numnames #2 >
+          %      { "; " * }
+          %      'skip$
+          %    if$
+          %    t "others" =
+          %      { " et~al." * }
+          %      { t * }
+          %    if$
+          %  }
+          %if$
         }
         't
       if$
