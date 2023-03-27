@@ -5,6 +5,8 @@
   \rlap{\textcolor{white}{\rule{2.5em}{1em}}}%
   \protect\namestack{Erik D. Demaine; Martin L. Demaine}}}
 
+\usepackage[utf8]{inputenc}
+
 %
 % the following standard packages may be helpful, but are not required
 %
@@ -62,7 +64,7 @@
 \makeatother
 
 \usepackage{transparent}
-\newcommand\namestack[1]{\texttransparent{0.666}{\textstack{#1}}}
+\newcommand\namestack[2][0.666]{\texttransparent{#1}{\textstack{#2}}}
 
 
 \begin{document}
@@ -168,7 +170,15 @@ which is inconsistent with multiple or all authors being equal.
 In our own writing, we try to avoid this practice, and instead
 write all authors' last names whenever citing a paper,
 e.g., ``X, Y, and Z~[\#]''.
-But this workaround becomes impractical for references with ten or more authors.
+But this workaround becomes impractical for references with over a dozen
+authors, such as some of our papers
+\cite{ArithmeticGames_ISAAC2020,LessThanEdgeMatching_JIP}
+% >>> lines=open('edemaine.bib').read().split('\n')
+% >>> import re
+% >>> lines=[(len(re.findall(r'\band\b', line))+1, line) for line in lines]
+% >>> sorted(lines)[-10:]
+or some papers in astronomy \cite{reverse-alphabetical} and
+biology \cite{human-genome}.
 
 Beyond listing authors when citing papers,
 other biases arise from alphabetical ordering specifically.
@@ -238,6 +248,34 @@ multiple ``middle'' authors, and multiple supervising authors,
 we can write three distinct groups of authors,
 where each group is overlapping.
 
+Our vision is that each set of names (as we often associate with each paper)
+becomes recognizable as its own image.  Readers can then recognize repetitions
+of the same paper without necessarily reading the individual names.
+For example, compare two of our papers with overlapping but differing sets
+of 15 authors each:
+\citet{ArithmeticGames_ISAAC2020} vs.\ \citet{LessThanEdgeMatching_JIP}.
+Each author stack has a distinct shape.
+If we now repeat one --- \citet{ArithmeticGames_ISAAC2020} ---
+you should be able to recognize which it is.
+
+\subsection{Revealing the Names}
+
+Of course, we want to give authors (equal) credit for their papers,
+not remove all credit.
+We have implemented two ways to reveal the actual names present in a stack.
+
+First, hovering over the stacked names should pop up a tooltip with the
+authors listed in their original order.
+In practice, PDF viewers do not seem to display the tooltips for text that is
+also a link to the bibliography, so readers must click on the link and then
+hover over the name stack in the bibliography; hopefully this extra step
+will be unnecessary in the future.
+
+Second, copying and pasting the author stack (together with any surrounding
+text) into another document should reveal the authors in their original order,
+using PDF's accessibility feature.  This makes it easy to quote portions of
+a paper, including any citations, with or without author stacks.
+
 \subsection{Opacity}
 
 To improve legibility, we write each name in semi-transparent ink
@@ -252,14 +290,10 @@ making the names more legible.%
 Compare:
 %
 \begin{itemize}
-\item Opacity $1$\phantom{${}/1$}:
-  \texttransparent{1}{\textstack{Erik Demaine; Martin Demaine}}
-\item Opacity $3/4$:
-  \texttransparent{0.75}{\textstack{Erik Demaine; Martin Demaine}}
-\item Opacity $2/3$:
-  \texttransparent{0.666}{\textstack{Erik Demaine; Martin Demaine}}
-\item Opacity $1/2$:
-  \texttransparent{0.5}{\textstack{Erik Demaine; Martin Demaine}}
+\item \namestack[1]{Erik Demaine; Martin Demaine} ~ (opacity $1$, no transparency)
+\item \namestack[0.75]{Erik Demaine; Martin Demaine} ~ (opacity $3/4$)
+\item \namestack[0.666]{Erik Demaine; Martin Demaine} ~ (opacity $2/3$)
+\item \namestack[0.5]{Erik Demaine; Martin Demaine} ~ (opacity $1/2$)
 \end{itemize}
 %
 In the future, we may consider using a different opacity depending on the
@@ -271,6 +305,11 @@ appearing the same in all contexts.
 
 \section{Technology}
 
+\subsection{\LaTeX}
+
+\subsection{\textsc{Bib}\TeX}
+
+\subsection{HTML}
 
 \bibliography{paper}
 \bibliographystyle{stack-abbrvnat}
