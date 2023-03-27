@@ -67,6 +67,35 @@
 \newcommand\namestack[2][0.666]{\texttransparent{#1}{\textstack{#2}}}
 
 
+%%% Remove links from names so that tooltips are visible.
+%%% Code from https://tex.stackexchange.com/a/27311/2451040
+
+\usepackage{etoolbox}
+\makeatletter
+
+% Patch case where name and year are separated by aysep
+\patchcmd{\NAT@citex}
+  {\@citea\NAT@hyper@{%
+     \NAT@nmfmt{\NAT@nm}%
+     \hyper@natlinkbreak{\NAT@aysep\NAT@spacechar}{\@citeb\@extra@b@citeb}%
+     \NAT@date}}
+  {\@citea\NAT@nmfmt{\NAT@nm}%
+   \NAT@aysep\NAT@spacechar\NAT@hyper@{\NAT@date}}{}{}
+
+% Patch case where name and year are separated by opening bracket
+\patchcmd{\NAT@citex}
+  {\@citea\NAT@hyper@{%
+     \NAT@nmfmt{\NAT@nm}%
+     \hyper@natlinkbreak{\NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi}%
+       {\@citeb\@extra@b@citeb}%
+     \NAT@date}}
+  {\@citea\NAT@nmfmt{\NAT@nm}%
+   \NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi\NAT@hyper@{\NAT@date}}
+  {}{}
+
+\makeatother
+
+
 \begin{document}
 
 \title{Every Author as First Author}
@@ -266,10 +295,16 @@ We have implemented two ways to reveal the actual names present in a stack.
 
 First, hovering over the stacked names should pop up a tooltip with the
 authors listed in their original order.
-In practice, PDF viewers do not seem to display the tooltips for text that is
-also a link to the bibliography, so readers must click on the link and then
-hover over the name stack in the bibliography; hopefully this extra step
-will be unnecessary in the future.
+%In practice, PDF viewers do not seem to display the tooltips for text that is
+%also a link to the bibliography, so readers must click on the link and then
+%hover over the name stack in the bibliography; hopefully this extra step
+%will be unnecessary in the future.
+This feature works on all desktop PDF viewers we have tested,
+but does not work on mobile devices we tested
+(probably because they lack a natural notion of ``hovering'').
+Because tooltips and links are both types of PDF annotations, they would
+conflict with each other if used together, so we had to remove hyperlinks
+from names; the years remain clickable links to the bibliography.
 
 Second, copying and pasting the author stack (together with any surrounding
 text) into another document should reveal the authors in their original order,
