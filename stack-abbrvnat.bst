@@ -315,7 +315,7 @@ FUNCTION {format.full.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { s nameptr
-      "{vv~}{ll}" format.name$ 't :=
+      "{vv }{ll}" format.name$ 't :=
       nameptr #1 >
         {
           "; " * t *
