@@ -379,10 +379,19 @@ FUNCTION {make.full.names}
   if$
 }
 
+FUNCTION {write.label}
+{
+  make.full.names write$
+  "(" write$
+  year write$
+  ")" write$
+}
+
 FUNCTION {output.bibitem}
 { newline$
   "\bibitem[" write$
-  label write$
+  write.label
+  %label write$
   "]{" write$
   cite$ write$
   "}" write$
