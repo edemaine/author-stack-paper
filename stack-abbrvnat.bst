@@ -245,6 +245,7 @@ FUNCTION {format.names}
     }
   while$
   namestack
+  " (" * numnames int.to.str$ * ")" *
 }
 
 FUNCTION {format.key}
@@ -1436,6 +1437,7 @@ FUNCTION {begin.bib}
   write$ newline$
   "  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi"
   write$ newline$
+  "\bibitem[AAAA(2023)]{paren-description}(numbers in parentheses indicate number of authors)" write$ newline$
 }
 
 EXECUTE {begin.bib}
