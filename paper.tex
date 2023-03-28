@@ -257,7 +257,9 @@ authors listed in their original order.
 %hover over the name stack in the bibliography; hopefully this extra step
 %will be unnecessary in the future.
 This feature works on all desktop PDF viewers we have tested,
-but does not work on mobile devices we tested
+except Chrome%
+\footnote{See \url{https://bugs.chromium.org/p/chromium/issues/detail?id=1122489}}%
+, but does not work on mobile devices we tested
 (probably because they lack a natural notion of ``hovering'').
 Because tooltips and links are both types of PDF annotations, they would
 conflict with each other if used together, so we had to remove hyperlinks
@@ -380,9 +382,44 @@ like so:
   \namestack{Erik Demaine; Martin Demaine}
 \end{center}
 
-Listings \ref{lst:namestack} and \ref{lst:natbib}
-
 \lstinputlisting[float=*,caption={\LaTeX\ source code for \texttt{\textbackslash namestack}},label=lst:namestack]{namestack.tex}
+
+Listing~\ref{lst:namestack} shows the main source code for this macro.
+The main idea is to render each name (into a \TeX\ horizontal box),
+and stack those boxes vertically (in a \TeX\ vertical box)
+with a negative one-line vertical space in between consecutive boxes.
+The example above effectively becomes:
+
+\begin{center}
+\begin{lstlisting}
+\vbox{%
+  \hbox{Erik Demaine}%
+  \vskip-\baselineskip
+  \hbox{Martin Demaine}%
+}%
+\end{lstlisting}
+\end{center}
+
+This main content gets wrapped in three additional components:
+%
+\begin{enumerate}
+\item \lstinline|\texttransparent{0.666}{...}| (from \texttt{transparent.sty})
+  to make the names semi-transparent at opacity $2/3$.
+  The opacity can also be overridden via an optional argument, as in
+  \lstinline|\namestack[0.9]{...}|.
+\item \lstinline|\pdftooltip| (from \texttt{pdfcomment.sty})
+  to add tooltips to the stack, with the original list of names.
+\item \lstinline|\BeginAccSupp{...ActualText=...} ... \EndAccSupp|
+  (from \texttt{accsupp.sty}) to override copy/paste behavior for the stack.
+\end{enumerate}
+
+Listing~\ref{lst:natbib} shows additional code necessary to support
+name/year bibliographies via \texttt{natbib.sty}.  Specifically, we
+automatically wrap the ``name'' portion of a citation in
+\lstinline|\namestack| (so it should be written as a semicolon-separated list).
+We also need to disable hyperlinks on the name portion of each citation,
+to avoid covering the tooltip with another PDF annotation.
+
 \lstinputlisting[float=*,caption={\LaTeX\ code providing additional support for \texttt{natbib.sty}},label=lst:natbib]{stack-natbib.tex}
 
 \subsection{\textsc{Bib}\TeX}

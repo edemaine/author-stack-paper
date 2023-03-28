@@ -1,9 +1,8 @@
 %% \namestack support for natbib.sty
 
-\usepackage{etoolbox}
 \makeatletter
 
-% Don't link names in a citation, or else they conflict with tooltips.
+% When formatting the name part of a citation, wrap in \namestack
 \def\NAT@nmfmt#1{%
   \xdef\textstack@expand{#1}%
   \expandafter\namestack\textstack@expand
@@ -11,6 +10,7 @@
 
 % Remove links from names so that tooltips are visible.
 % Code from https://tex.stackexchange.com/a/27311/2451040
+\usepackage{etoolbox}
 
 % Patch case where name and year are separated by aysep
 \patchcmd{\NAT@citex}
