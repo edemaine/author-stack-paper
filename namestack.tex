@@ -1,0 +1,39 @@
+%% \namestack for making overlay/superposed stacks of names/text
+
+\usepackage[final]{pdfcomment}
+\usepackage{accsupp}
+
+% Usage: \textstack{item1; item2; ...}
+% Or: \textstack[sep]{item1 sep item2 sep ...}
+% Expands to \vbox{\hbox{item1}\vskip-\baselineskip\hbox{item2}...},
+% plus a PDF tooltip and copy/paste override with original text.
+% Loop iteration based on https://tex.stackexchange.com/a/159177/245104
+\makeatletter
+\newcommand\textstack[2][;]{%
+  % Append separator (#1) and \@eol to end of input:
+  \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
+  % Split into first component (##1) up to separator (#1), and rest (##2):
+  \def\textstack@step##1#1##2\@eol{%
+    \hbox{\ignorespaces ##1\unskip}%
+    \ifx\@eol##2\@eol\else
+      % More steps: unwind vertical space and continue
+      \vskip-\baselineskip
+      \textstack@step##2\@eol
+    \fi}%
+  % Tooltip with full author list (#2)
+  \pdftooltip{%
+    % Override copy/paste text with full author list (#2)
+    \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}%
+      % Wrap stack in \vbox
+      \vbox{\textstack@append{#2}}%
+    \EndAccSupp{}%
+  }{#2}%
+}
+\makeatother
+
+\usepackage{transparent}
+
+% Usage: \namestack{name1; name2; ...}
+% Or: \namestack[opacity]{name1; name2; ...}
+% Like \textstack but also applies an opacity to the text.
+\newcommand\namestack[2][0.666]{\texttransparent{#1}{\textstack{#2}}}

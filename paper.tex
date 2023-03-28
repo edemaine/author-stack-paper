@@ -13,11 +13,31 @@
 %\usepackage{courier}            % standard fixed width font
 \usepackage[scaled]{helvet} % see www.ctan.org/get/macros/latex/required/psnfss/psnfss2e.pdf
 \usepackage[hyphens,spaces,obeyspaces]{url}
-\usepackage{listings}          % format code
 \usepackage{enumitem}      % adjust spacing in enums
 \usepackage[colorlinks=true,allcolors=blue,breaklinks,draft=false]{hyperref}   % hyperlinks, including DOIs and URLs in bibliography
 % known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
 \newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
+
+% Theme based on https://tex.stackexchange.com/a/283543/245104
+\usepackage{xcolor}
+\definecolor{commentgreen}{RGB}{2,112,10}
+%\definecolor{eminence}{RGB}{108,48,130}
+%\definecolor{eminence}{RGB}{81,36,97} % 25% darker
+\definecolor{ours}{RGB}{0,71,171} % cobolt blue
+\definecolor{frenchplum}{RGB}{129,20,83}
+\usepackage{listings}
+\lstset{
+  language=[LaTeX]TeX,
+  basicstyle=\ttfamily,
+  numbers=left, numberstyle=\footnotesize,
+  commentstyle=\slshape\color{commentgreen},
+  alsoletter={@},
+  moretexcs={pdftooltip,BeginAccSupp,EndAccSupp,@eol,patchcmd,texttransparent,NAT@nmfmt,NAT@citex,NAT@hyper@,@citea,hyper@natlinkbreak,NAT@nm,NAT@aysep,NAT@spacechar,@citeb,@extra@b@citeb,NAT@date,NAT@@open},
+  keywordstyle=\color{frenchplum},
+  emph={textstack,textstack@step,textstack@append,textstack@expand,namestack},
+  emphstyle=\color{ours}
+  %texcsstyle=*\color{frenchplum}
+}
 
 %% OLD:
 \iffalse
@@ -28,76 +48,8 @@
 
 %% NEW:
 
-\usepackage[final]{pdfcomment}
-\usepackage{accsupp}
-
-% Usage: \textstack{item1; item2; ...}
-% Or: \textstack[sep]{item1 sep item2 sep ...}
-% Expands to \vbox{\hbox{item1}\vskip-\baselineskip\hbox{item2}...},
-% plus a PDF tooltip and copy/paste override with original text.
-% Loop iteration based on https://tex.stackexchange.com/a/159177/245104
-\makeatletter
-\newcommand\textstack[2][;]{%
-  % Append separator (#1) and \@eol to end of input:
-  \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
-  % Split into first component (##1) up to separator (#1), and rest (##2):
-  \def\textstack@step##1#1##2\@eol{%
-    \hbox{\ignorespaces ##1\unskip}%
-    \ifx\@eol##2\@eol\else
-      % More steps: unwind vertical space and continue
-      \vskip-\baselineskip
-      \textstack@step##2\@eol
-    \fi}%
-  % Tooltip with full author list (#2)
-  \pdftooltip{%
-    \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}%
-      % Wrap stack in \vbox
-      \vbox{\textstack@append{#2}}%
-    \EndAccSupp{}%
-  }{#2}%
-}
-% natbib support
-\def\NAT@nmfmt#1{%
-  \xdef\textstack@expand{#1}%
-  \expandafter\namestack\textstack@expand
-}
-\makeatother
-
-\usepackage{transparent}
-
-% Usage: \namestack{name1; name2; ...}
-% Or: \namestack[opacity]{name1; name2; ...}
-% Like \textstack but also applies an opacity to the text.
-\newcommand\namestack[2][0.666]{\texttransparent{#1}{\textstack{#2}}}
-
-
-%%% Remove links from names so that tooltips are visible.
-%%% Code from https://tex.stackexchange.com/a/27311/2451040
-
-\usepackage{etoolbox}
-\makeatletter
-
-% Patch case where name and year are separated by aysep
-\patchcmd{\NAT@citex}
-  {\@citea\NAT@hyper@{%
-     \NAT@nmfmt{\NAT@nm}%
-     \hyper@natlinkbreak{\NAT@aysep\NAT@spacechar}{\@citeb\@extra@b@citeb}%
-     \NAT@date}}
-  {\@citea\NAT@nmfmt{\NAT@nm}%
-   \NAT@aysep\NAT@spacechar\NAT@hyper@{\NAT@date}}{}{}
-
-% Patch case where name and year are separated by opening bracket
-\patchcmd{\NAT@citex}
-  {\@citea\NAT@hyper@{%
-     \NAT@nmfmt{\NAT@nm}%
-     \hyper@natlinkbreak{\NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi}%
-       {\@citeb\@extra@b@citeb}%
-     \NAT@date}}
-  {\@citea\NAT@nmfmt{\NAT@nm}%
-   \NAT@spacechar\NAT@@open\if*#1*\else#1\NAT@spacechar\fi\NAT@hyper@{\NAT@date}}
-  {}{}
-
-\makeatother
+\input{namestack}
+\input{stack-natbib}
 
 
 \begin{document}
@@ -415,6 +367,23 @@ a helpful step toward resolving the climate crisis.
 \section{Technology}
 
 \subsection{\LaTeX}
+
+We implemented \LaTeX\ macros for easily superimposing author names
+into an ``overlay stack''.
+A user can build such a stack from a semicolon-separated list of names
+like so:
+
+\begin{center}
+  \lstinline|\namestack{Erik Demaine; Martin Demaine}|
+
+  $\to$ ~
+  \namestack{Erik Demaine; Martin Demaine}
+\end{center}
+
+Listings \ref{lst:namestack} and \ref{lst:natbib}
+
+\lstinputlisting[float=*,caption={\LaTeX\ source code for \texttt{\textbackslash namestack}},label=lst:namestack]{namestack.tex}
+\lstinputlisting[float=*,caption={\LaTeX\ code providing additional support for \texttt{natbib.sty}},label=lst:natbib]{stack-natbib.tex}
 
 \subsection{\textsc{Bib}\TeX}
 
