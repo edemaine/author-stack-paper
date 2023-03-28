@@ -20,11 +20,11 @@
 \newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
 
 %% OLD:
+\iffalse
 % Usage: \textstack{\textitem{item1}\textitem{item2}...}
 \newcommand\textstack[1]{\strut\vbox to 0pt{\def\textstacksep{}#1}\ignorespaces}
 \newcommand\textitem[1]{\textstacksep\hbox{\smash{#1}}\def\textstacksep{\vss}\ignorespaces}
-
-\let\textstack=\relax
+\fi
 
 %% NEW:
 
@@ -48,7 +48,7 @@
       \vskip-\baselineskip
       \textstack@step##2\@eol
     \fi}%
-  % Tooltip with full author list
+  % Tooltip with full author list (#2)
   \pdftooltip{%
     \BeginAccSupp{method=pdfstringdef,unicode,ActualText={#2}}%
       % Wrap stack in \vbox
@@ -64,6 +64,10 @@
 \makeatother
 
 \usepackage{transparent}
+
+% Usage: \namestack{name1; name2; ...}
+% Or: \namestack[opacity]{name1; name2; ...}
+% Like \textstack but also applies an opacity to the text.
 \newcommand\namestack[2][0.666]{\texttransparent{#1}{\textstack{#2}}}
 
 
