@@ -339,6 +339,68 @@ colors to represent different roles (such as supervisor).
 But for now we like the uniformity of every name
 appearing the same in all contexts.
 
+\subsection{Space Savings}
+
+An additional benefit of our solution is that long lists of names can be
+written in far less space.  This property is especially helpful for conferences
+and journals with a hard limit on the number of pages including the bibliography
+(including many with a printed publication).  For example, the 274 authors of
+the human genome project \cite{human-genome} would normally take almost half
+a page to list:
+
+\begin{quote}\sloppy
+J.~C. Venter, M.~D. Adams, E.~W. Myers, P.~W. Li, R.~J. Mural, G.~G. Sutton,
+  H.~O. Smith, M.~Yandell, C.~A. Evans, R.~A. Holt, J.~D. Gocayne,
+  P.~Amanatides, R.~M. Ballew, D.~H. Huson, J.~R. Wortman, Q.~Zhang, C.~D.
+  Kodira, X.~H. Zheng, L.~Chen, M.~Skupski, G.~Subramanian, P.~D. Thomas,
+  J.~Zhang, G.~L.~G. Miklos, C.~Nelson, S.~Broder, A.~G. Clark, J.~Nadeau,
+  V.~A. McKusick, N.~Zinder, A.~J. Levine, R.~J. Roberts, M.~Simon, C.~Slayman,
+  M.~Hunkapiller, R.~Bolanos, A.~Delcher, I.~Dew, D.~Fasulo, M.~Flanigan,
+  L.~Florea, A.~Halpern, S.~Hannenhalli, S.~Kravitz, S.~Levy, C.~Mobarry,
+  K.~Reinert, K.~Remington, J.~Abu-Threideh, E.~Beasley, K.~Biddick,
+  V.~Bonazzi, R.~Brandon, M.~Cargill, I.~Chandramouliswaran, R.~Charlab,
+  K.~Chaturvedi, Z.~Deng, V.~D. Francesco, P.~Dunn, K.~Eilbeck, C.~Evangelista,
+  A.~E. Gabrielian, W.~Gan, W.~Ge, F.~Gong, Z.~Gu, P.~Guan, T.~J. Heiman, M.~E.
+  Higgins, R.~R. Ji, Z.~Ke, K.~A. Ketchum, Z.~Lai, Y.~Lei, Z.~Li, J.~Li,
+  Y.~Liang, X.~Lin, F.~Lu, G.~V. Merkulov, N.~Milshina, H.~M. Moore, A.~K.
+  Naik, V.~A. Narayan, B.~Neelam, D.~Nusskern, D.~B. Rusch, S.~Salzberg,
+  W.~Shao, B.~Shue, J.~Sun, Z.~Wang, A.~Wang, X.~Wang, J.~Wang, M.~Wei,
+  R.~Wides, C.~Xiao, C.~Yan, A.~Yao, J.~Ye, M.~Zhan, W.~Zhang, H.~Zhang,
+  Q.~Zhao, L.~Zheng, F.~Zhong, W.~Zhong, S.~Zhu, S.~Zhao, D.~Gilbert,
+  S.~Baumhueter, G.~Spier, C.~Carter, A.~Cravchik, T.~Woodage, F.~Ali, H.~An,
+  A.~Awe, D.~Baldwin, H.~Baden, M.~Barnstead, I.~Barrow, K.~Beeson, D.~Busam,
+  A.~Carver, A.~Center, M.~L. Cheng, L.~Curry, S.~Danaher, L.~Davenport,
+  R.~Desilets, S.~Dietz, K.~Dodson, L.~Doup, S.~Ferriera, N.~Garg,
+  A.~Gluecksmann, B.~Hart, J.~Haynes, C.~Haynes, C.~Heiner, S.~Hladun,
+  D.~Hostin, J.~Houck, T.~Howland, C.~Ibegwam, J.~Johnson, F.~Kalush, L.~Kline,
+  S.~Koduru, A.~Love, F.~Mann, D.~May, S.~McCawley, T.~McIntosh, I.~McMullen,
+  M.~Moy, L.~Moy, B.~Murphy, K.~Nelson, C.~Pfannkoch, E.~Pratts, V.~Puri,
+  H.~Qureshi, M.~Reardon, R.~Rodriguez, Y.~H. Rogers, D.~Romblad, B.~Ruhfel,
+  R.~Scott, C.~Sitter, M.~Smallwood, E.~Stewart, R.~Strong, E.~Suh, R.~Thomas,
+  N.~N. Tint, S.~Tse, C.~Vech, G.~Wang, J.~Wetter, S.~Williams, M.~Williams,
+  S.~Windsor, E.~Winn-Deen, K.~Wolfe, J.~Zaveri, K.~Zaveri, J.~F. Abril,
+  R.~Guigo, M.~J. Campbell, K.~V. Sjolander, B.~Karlak, A.~Kejariwal, H.~Mi,
+  B.~Lazareva, T.~Hatton, A.~Narechania, K.~Diemer, A.~Muruganujan, N.~Guo,
+  S.~Sato, V.~Bafna, S.~Istrail, R.~Lippert, R.~Schwartz, B.~Walenz,
+  S.~Yooseph, D.~Allen, A.~Basu, J.~Baxendale, L.~Blick, M.~Caminha,
+  J.~Carnes-Stine, P.~Caulk, Y.~H. Chiang, M.~Coyne, C.~Dahlke, A.~D. Mays,
+  M.~Dombroski, M.~Donnelly, D.~Ely, S.~Esparham, C.~Fosler, H.~Gire,
+  S.~Glanowski, K.~Glasser, A.~Glodek, M.~Gorokhov, K.~Graham, B.~Gropman,
+  M.~Harris, J.~Heil, S.~Henderson, J.~Hoover, D.~Jennings, C.~Jordan,
+  J.~Jordan, J.~Kasha, L.~Kagan, C.~Kraft, A.~Levitsky, M.~Lewis, X.~Liu,
+  J.~Lopez, D.~Ma, W.~Majoros, J.~McDaniel, S.~Murphy, M.~Newman, T.~Nguyen,
+  N.~Nguyen, M.~Nodell, S.~Pan, J.~Peck, M.~Peterson, W.~Rowe, R.~Sanders,
+  J.~Scott, M.~Simpson, T.~Smith, A.~Sprague, T.~Stockwell, R.~Turner,
+  E.~Venter, M.~Wang, M.~Wen, D.~Wu, M.~Wu, A.~Xia, A.~Zandieh, and X.~Zhu.
+\end{quote}
+
+As a result, many papers that cite this paper do not even list the entire
+author list in the bibliography, instead writing ``J. C. Venter et al.''
+% example: https://www.nature.com/articles/s41586-022-04601-8
+Our approach makes it easy to give the full author list \cite{human-genome},
+giving credit to all authors without allocating that paper a disproportionate
+amount of space in the bibliography.
+
 \section{Technology}
 
 \subsection{\LaTeX}
@@ -349,5 +411,6 @@ appearing the same in all contexts.
 
 \bibliography{paper}
 \bibliographystyle{stack-abbrvnat}
+%\bibliographystyle{abbrvnat}
 
 \end{document}
