@@ -95,7 +95,7 @@
 
 Authorship order makes for fraught debates in academia.
 Perhaps the most common standard is to list authors in decreasing order
-by significance of contributions to the work.
+by significance of contribution.
 But this quantity is usually difficult to measure,
 and can lead to uncomfortable conversations, arguments, or even feuds.
 For example, are an advisor's leadership and high-level ideas
@@ -110,14 +110,14 @@ In some disciplines, the order has additional codified meanings.
 For example, many natural sciences use the last author position to indicate the
 research supervisor (principle investigator) whose lab housed the work.
 But what if multiple people serve that role, as research becomes
-increasingly collaborative research?
+increasingly collaborative?
 
 \paragraph{Existing solutions.}
 
 Some disciplines --- such as economics, mathematics, and
-theoretical computer science --- shun the idea of determining authorship order
-and instead use an algorithmically determined order:
-alphabetically increasing by last name.
+theoretical computer science --- discourage the idea of determining authorship
+order by defaulting to an algorithmically determined order:
+alphabetically increasing by surname.
 In particular, the alphabetical standard is a central tenet of
 \emph{supercollaborative} research \citep{supercollaboration},
 where researchers brainstorm to solve problems as equals,
@@ -155,14 +155,14 @@ A fundamental limitation to \emph{any} approach that lists the authors
 in a fixed order arises when citing papers with several authors.
 In the body of a paper (as opposed to the bibliography), it is most common
 to write ``X et al.~[\#]''\ when referring to a paper [\#]
-whose first author's last name is X.
-In some styles such as APA, this is built into the citation itself,
-e.g., (X et al., 2023).
+whose first author's surname is X.
+In author--year styles such as APA, this is even built into the citation
+itself, e.g., (X et al., 2023).
 As a result, author X gets their name effectively promoted with every citation,
 which is inconsistent with multiple or all authors being equal.
 
 In our own writing, we try to avoid this practice, and instead
-write all authors' last names whenever citing a paper,
+write all authors' surnames whenever citing a paper,
 e.g., ``X, Y, and Z~[\#]''.
 But this workaround becomes impractical for references with over a dozen
 authors, such as some of our papers
@@ -178,21 +178,22 @@ Beyond listing authors when citing papers,
 other biases arise from alphabetical ordering specifically.
 Bibliography styles where papers are sorted alphabetically (such as ACM's)
 cluster together papers with the same first author, further promoting people
-who have alphabetically early last names so are more likely to be first.
+who have alphabetically early surnames so are more likely to be first.
 And of course fields whose standard is not alphabetical ordering
 unfairly judge authorship order of papers that do.
 
 These effects are collectively referred to as
 \emph{alphabetical discrimination} \cite{alphabetical-discrimination}.
 Several studies have explored this phenomenon, and find evidence that
-people with alphabetically earlier last names are more likely to succeed
+people with alphabetically earlier surnames are more likely to succeed
 academically.
 The present authors have sometimes uncomfortably wondered whether they have
-benefitted in this way, with last names starting with ``D''.
+benefitted in this way, with surnames starting with ``D''.
 
 To compensate for alphabetical discrimination,
 several specific papers have explored alternate mechanisms
-for deciding authorship order other than alphabetical,
+for deciding authorship order,
+% other than alphabetical,
 as documented in a footnote.
 These mechanisms include competition via
 25-game croquet series \cite{croquet},
@@ -206,9 +207,9 @@ rock paper scissors \cite{rock-paper-scissors};
 by coin toss \cite{coin-toss},
 dice roll \cite{dice},
 the outcome of famous cricket games \cite{cricket},
-currency exchange rate fluctuation \cite{currency-fluctuation},
+currency exchange rate fluctuation \cite{currency-fluctuation}, or
 dog treat consumption order \cite{dog};
-by authors' height \cite{height},
+or by authors' height \cite{height},
 fertility \cite{fertility},
 proximity to tenure \cite{tenure-proximity},
 reverse alphabetical order \cite{reverse-alphabetical},
@@ -228,15 +229,15 @@ and their comments.
 
 \section{Solution}
 
-Our proposed solution is a new standard for listing authors on a paper:
+Our proposed solution is a new standard for listing the authors of a paper:
 instead of any ordered list, write all author names on top of each other.
 For example, instead of ``Erik Demaine and Martin Demaine'' (alphabetical),
 we write \namestack{Erik Demaine; Martin Demaine}.
 In this way, we achieve the true ideal of an unordered list of equal authors,
-where everyone comes first.
+where every author comes first.
 
-In settings where authors did not contribute equally, we can generalize to
-writing each group of equal authors as an overlapping stack of names.
+In settings where authors did not contribute roughly equally, we can generalize
+to writing each group of equal authors as an overlapping stack of names.
 For example, when we want to distinguish multiple first authors,
 multiple ``middle'' authors, and multiple supervising authors,
 we can write three distinct groups of authors,
@@ -257,8 +258,8 @@ you should be able to recognize which it is.
 
 Of course, we want to give authors (equal) credit for their papers,
 not remove all credit.
-We have implemented two ways to reveal the actual names present in a stack,
-when viewing a PDF file on a computer.
+We have implemented two ways to reveal the actual names present
+in an overlapping stack, when viewing a PDF file on a computer.
 
 First, hovering over the stacked names should pop up a tooltip with the
 authors listed in their original order, as shown in
@@ -286,8 +287,8 @@ from names; the years remain clickable links to the bibliography.
 
   \includegraphics[scale=0.5]{figs/tooltip-bib.png}
   \caption{Hovering over a name stack reveals the authors in their original
-    order, as they would normally be written in the citation (above)
-    or bibliography (below).  Screenshots from
+    order, as they would normally be written in the citation (top)
+    or bibliography (bottom).  Screenshots from
     VSCode's LaTeX Workshop Extension's internal PDF viewer
     \cite{latex-workshop-pdf}, which is based on PDF.js.}
   \label{fig:tooltip}
@@ -307,7 +308,8 @@ making the names more legible.%
 %
 \footnote{Warning: Not all PDF viewers correctly display text transparency
   as created by \texttt{transparent.sty}.  Notably, Adobe Acrobat on Windows
-  does not seem to darken where multiple layers overlap.}
+  does not seem to darken where multiple layers overlap,
+  instead rendering a uniform gray.}
 %
 Compare:
 %
@@ -414,8 +416,8 @@ like so:
 
 Listing~\ref{lst:namestack} shows the source code for this macro.
 The main idea is to render each name (into a \TeX\ horizontal box),
-and stack those boxes vertically (in a \TeX\ vertical box)
-with a negative one-line vertical space in between consecutive boxes.
+and stack them vertically (in a \TeX\ vertical box)
+with a negative one-line vertical space in between consecutive names.
 The example above effectively becomes:
 
 \begin{lstlisting}
@@ -435,7 +437,7 @@ This main content gets wrapped in three additional components:
   \lstinline|\namestack[0.9]{...}|.
 \item \lstinline|\pdftooltip| (from \texttt{pdfcomment.sty})
   to add tooltips to the stack, with the original list of names.
-\item \lstinline|\BeginAccSupp{...ActualText=...} ... \EndAccSupp|
+\item \lstinline|\BeginAccSupp{...ActualText=...}...\EndAccSupp{}|
   (from \texttt{accsupp.sty}) to override copy/paste behavior for the stack.
 \end{enumerate}
 
@@ -459,8 +461,8 @@ to avoid covering the tooltip with another PDF annotation.
   emph={namestack, format.names, format.full.names, make.full.names, calc.label, write.label, output.bibitem, before.all, output.state},
 }
 
-We modified the \texttt{abbrvnat.bst} bibliography style requested by this
-proceedings to work with \lstinline|\namestack|;
+We modified the \texttt{abbrvnat.bst} \BibTeX\ bibliography style requested by
+this proceedings to work with \lstinline|\namestack|;
 refer to Listing~\ref{lst:bst} for the code.
 First, we automatically wrap author/editor names within each bibliography entry
 with \lstinline|\namestack{...}|.
@@ -584,7 +586,7 @@ FUNCTION {output.bibitem}
 }
 
 We also give a proof-of-concept that the same style of rendering is
-possible in HTML content.  Figure~\ref{fig:html} shows a rendering
+possible in HTML.  Figure~\ref{fig:html} shows a rendering
 of the HTML code in Listing~\ref{lst:html}.
 CSS Grid makes implementing an overlapping stack quite easy:
 by placing each name in the same grid cell,
@@ -611,7 +613,7 @@ Arguably, longer names already receive some bias without our system,
 as they take up more relative space in the bibliography.
 Yet in practice so far, most surnames seem to have a similar length.
 The readability of a \emph{suffix} of a surname also does not seem to
-bias the actual name much.
+advantage the actual name much.
 
 A final issue is that overlapping name stacks are not easy to read.
 It may be possible to write names in a way that has no first name
