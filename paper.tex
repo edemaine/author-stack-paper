@@ -412,13 +412,12 @@ like so:
 
 \lstinputlisting[float=*,caption={\LaTeX\ source code for \texttt{\textbackslash namestack}},label=lst:namestack]{namestack.tex}
 
-Listing~\ref{lst:namestack} shows the main source code for this macro.
+Listing~\ref{lst:namestack} shows the source code for this macro.
 The main idea is to render each name (into a \TeX\ horizontal box),
 and stack those boxes vertically (in a \TeX\ vertical box)
 with a negative one-line vertical space in between consecutive boxes.
 The example above effectively becomes:
 
-\begin{center}
 \begin{lstlisting}
 \vbox{%
   \hbox{Erik Demaine}%
@@ -426,7 +425,6 @@ The example above effectively becomes:
   \hbox{Martin Demaine}%
 }%
 \end{lstlisting}
-\end{center}
 
 This main content gets wrapped in three additional components:
 %
@@ -575,8 +573,34 @@ FUNCTION {output.bibitem}
 }
 \end{lstlisting}
 
-
 \subsection{HTML}
+
+\lstset{
+  language=HTML,
+  alsoletter={-},
+  otherkeywords={grid-row, grid-column, opacity, display, inline-grid},
+  emph={stack, name}, % not working because of tag option
+  identifierstyle=
+}
+
+We also give a proof-of-concept that the same style of rendering is
+possible in HTML content.  Figure~\ref{fig:html} shows a rendering
+of the HTML code in Listing~\ref{lst:html}.
+CSS Grid makes implementing an overlapping stack quite easy:
+by placing each name in the same grid cell,
+the cell automatically grows to the maximum size of all names.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=0.2]{figs/html.png}
+  \caption{Rendering of HTML in Listing~\ref{lst:html}.
+    Screenshot from Google Chrome 111 on Windows 11.}
+  \label{fig:html}
+\end{figure}
+
+\lstinputlisting[caption={HTML source code illustrating a name stack},label=lst:html]{stack.html}
+
+\section{Future Work}
 
 \bibliography{paper}
 \bibliographystyle{stack-abbrvnat}
