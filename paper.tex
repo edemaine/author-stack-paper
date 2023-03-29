@@ -11,6 +11,7 @@
 % the following standard packages may be helpful, but are not required
 %
 %\usepackage{courier}            % standard fixed width font
+\usepackage{graphicx}
 \usepackage[scaled]{helvet} % see www.ctan.org/get/macros/latex/required/psnfss/psnfss2e.pdf
 \usepackage[hyphens,spaces,obeyspaces]{url}
 \usepackage{enumitem}      % adjust spacing in enums
@@ -248,10 +249,12 @@ you should be able to recognize which it is.
 
 Of course, we want to give authors (equal) credit for their papers,
 not remove all credit.
-We have implemented two ways to reveal the actual names present in a stack.
+We have implemented two ways to reveal the actual names present in a stack,
+when viewing a PDF file on a computer.
 
 First, hovering over the stacked names should pop up a tooltip with the
-authors listed in their original order.
+authors listed in their original order, as shown in
+Figure~\ref{fig:tooltip}.
 %In practice, PDF viewers do not seem to display the tooltips for text that is
 %also a link to the bibliography, so readers must click on the link and then
 %hover over the name stack in the bibliography; hopefully this extra step
@@ -264,6 +267,24 @@ except Chrome%
 Because tooltips and links are both types of PDF annotations, they would
 conflict with each other if used together, so we had to remove hyperlinks
 from names; the years remain clickable links to the bibliography.
+
+\begin{figure}[htbp]
+  \centering
+  \hrule
+
+  \includegraphics[scale=0.5]{figs/tooltip-text.png}
+
+  \hrule
+
+  \includegraphics[scale=0.5]{figs/tooltip-bib.png}
+  \caption{Hovering over a name stack reveals the authors in their original
+    order, as they would normally be written in the citation (above)
+    or bibliography (below).  Screenshots from
+    Visual Studio Code LaTeX Workshop Extension's internal PDF viewer,
+    which is based on PDF.js.}
+    % https://github.com/James-Yu/LaTeX-Workshop/wiki/View
+  \label{fig:tooltip}
+\end{figure}
 
 Second, copying and pasting the author stack (together with any surrounding
 text) into another document should reveal the authors in their original order,
