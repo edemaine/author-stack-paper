@@ -602,6 +602,37 @@ the cell automatically grows to the maximum size of all names.
 
 \section{Future Work}
 
+One limitation of our new standard for listing names is that longer surnames
+gain some bias.
+For example, ``Olds'' (the second half of ``Mitchell-Olds'')
+is clearly visible in \citet{currency-fluctuation}.
+Will this lead to longer and longer academic surnames in the future?
+Arguably, longer names already receive some bias without our system,
+as they take up more relative space in the bibliography.
+Yet in practice so far, most surnames seem to have a similar length.
+The readability of a \emph{suffix} of a surname also does not seem to
+bias the actual name much.
+
+A final issue is that overlapping name stacks are not easy to read.
+It may be possible to write names in a way that has no first name
+but still makes all names clearly readable.
+For example, a circle has no beginning or end, so arranging the names
+in a circular pattern avoids arranging any author ``first''.
+Figure~\ref{fig:circles} shows some initial experiments in this direction.
+It remains unsolved how to fit such circular arrangements
+in with the rest of a document.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figs/circles}
+  \caption{Circular arrangements of the authors of
+    \citet{LessThanEdgeMatching_JIP}.  Drawn in Inkscape
+    using Circular Align and Distribute, onto a circle of
+    radius 50 (left) or 200 (right); followed by $90^\circ$ rotation
+    (left); and rotating $180^\circ$ to make names upright (bottom).}
+  \label{fig:circles}
+\end{figure}
+
 \bibliography{paper}
 \bibliographystyle{stack-abbrvnat}
 %\bibliographystyle{abbrvnat}
