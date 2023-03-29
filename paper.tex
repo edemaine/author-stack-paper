@@ -24,8 +24,10 @@
 \definecolor{commentgreen}{RGB}{2,112,10}
 %\definecolor{eminence}{RGB}{108,48,130}
 %\definecolor{eminence}{RGB}{81,36,97} % 25% darker
-\definecolor{ours}{RGB}{0,71,171} % cobolt blue
+\definecolor{ouridentifier}{RGB}{0,71,171} % cobolt blue
 \definecolor{frenchplum}{RGB}{129,20,83}
+\definecolor{stringorange}{RGB}{139,64,0} % dark orange
+\definecolor{identifieryellow}{RGB}{82,81,0}
 \usepackage{listings}
 \lstset{
   language=[LaTeX]TeX,
@@ -36,9 +38,15 @@
   moretexcs={pdftooltip,BeginAccSupp,EndAccSupp,@eol,patchcmd,texttransparent,NAT@nmfmt,NAT@citex,NAT@hyper@,@citea,hyper@natlinkbreak,NAT@nm,NAT@aysep,NAT@spacechar,@citeb,@extra@b@citeb,NAT@date,NAT@@open},
   keywordstyle=\color{frenchplum},
   emph={textstack,textstack@step,textstack@append,textstack@expand,namestack},
-  emphstyle=\color{ours}
+  emphstyle=\color{ouridentifier},
+  stringstyle=\color{stringorange},
+  identifierstyle=\color{identifieryellow},
+  showstringspaces=false
   %texcsstyle=*\color{frenchplum}
 }
+\usepackage{multicol} % enables multicols=2
+
+\def\BibTeX{\textsc{Bib}\TeX}
 
 %% OLD:
 \iffalse
@@ -77,7 +85,7 @@
   without any advantage given to whoever's name
   happens to come first alphabetically (for example).
   We develop the technology for implementing this standard
-  in \LaTeX, \textsc{Bib}\TeX, and HTML;
+  in \LaTeX, \BibTeX, and HTML;
   show several examples; and discuss further advantages.
 \end{abstract}
 
@@ -280,9 +288,8 @@ from names; the years remain clickable links to the bibliography.
   \caption{Hovering over a name stack reveals the authors in their original
     order, as they would normally be written in the citation (above)
     or bibliography (below).  Screenshots from
-    Visual Studio Code LaTeX Workshop Extension's internal PDF viewer,
-    which is based on PDF.js.}
-    % https://github.com/James-Yu/LaTeX-Workshop/wiki/View
+    VSCode's LaTeX Workshop Extension's internal PDF viewer
+    \cite{latex-workshop-pdf}, which is based on PDF.js.}
   \label{fig:tooltip}
 \end{figure}
 
@@ -443,7 +450,131 @@ to avoid covering the tooltip with another PDF annotation.
 
 \lstinputlisting[float=*,caption={\LaTeX\ code providing additional support for \texttt{natbib.sty}},label=lst:natbib]{stack-natbib.tex}
 
-\subsection{\textsc{Bib}\TeX}
+\subsection{\BibTeX}
+
+% Minimal BibTeX mode
+\lstset{
+  alsoletter={$,.},
+  keywords={FUNCTION, if$, while$, for$, swap$, num.names$, format.name$, int.to.str$, write$, newline$, cite$},
+  string=[b]",
+  % Emphasizing function names but not variables
+  emph={namestack, format.names, format.full.names, make.full.names, calc.label, write.label, output.bibitem, before.all, output.state},
+}
+
+We modified the \texttt{abbrvnat.bst} bibliography style requested by this
+proceedings to work with \lstinline|\namestack|;
+refer to Listing~\ref{lst:bst} for the code.
+First, we automatically wrap author/editor names within each bibliography entry
+with \lstinline|\namestack{...}|.
+We also append the number of names in a parenthetical;
+this helps the reader know how many names are in each stack,
+which we find particularly helpful in the context of this paper
+for getting the feel for the newly introduced stacks.
+Second, we output \texttt{natbib.sty}-compatible labels with semicolons
+between all author names (instead of just the first author name followed by
+``et al.''), so that the code in Listing~\ref{lst:natbib} constructs the
+appropriate author stack.
+
+\begin{lstlisting}[float=*,caption={Excerpts from \BibTeX\ style file, including all changed functions from \texttt{abbrvnat.bst}},label=lst:bst,multicols=2]
+%% File: `stack-abbrvnat.bst'
+%% A modification of `abbrv.bst' for use
+%% with natbib package, further modified
+%% for stacking names with \namestack
+
+% Wrap top of stack in \namestack{...}
+FUNCTION {namestack}
+{ "\namestack{" swap$ * "}" *
+}
+
+% Format list of names (author or editor)
+% on top of stack for inclusion in bibitem
+FUNCTION {format.names}
+{ 's :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr "{f.~}{vv~}{ll}{, jj}"
+      format.name$ 't :=
+      nameptr #1 >
+        { namesleft #1 >
+            { "; " * t * }
+            { t "others" =
+                { " et~al." * }
+                { "; " * t * }
+              if$
+            }
+          if$
+        }
+        't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+  namestack
+  % Append parenthetical number of names
+  " (" * numnames int.to.str$ * ")" *
+}
+
+% Format list of names (author or editor)
+% on top of stack for inclusion in
+% natbib.sty label (just last names)
+FUNCTION {format.full.names}
+{'s :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr
+      "{vv }{ll}" format.name$ 't :=
+      nameptr #1 >
+        { "; " * t * }
+        't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+}
+
+% Omitted because not changed: make.full.names
+% calls format.full.names with author or editor
+
+% Compute label for sorting purposes (not used
+% for actual output because it can overflow)
+FUNCTION {calc.label}
+{
+  make.full.names
+  "(" *
+  year *
+  ")" *
+  'label :=
+}
+
+% Output natbib.sty label, without storing in
+% a variable so won't overflow with many names
+FUNCTION {write.label}
+{
+  make.full.names write$
+  "(" write$
+  year write$
+  ")" write$
+}
+
+FUNCTION {output.bibitem}
+{ newline$
+  "\bibitem[" write$
+  write.label
+  "]{" write$
+  cite$ write$
+  "}" write$
+  newline$
+  ""
+  before.all 'output.state :=
+}
+\end{lstlisting}
+
 
 \subsection{HTML}
 

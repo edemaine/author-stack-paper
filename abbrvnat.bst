@@ -1,8 +1,6 @@
-%% File: `stack-abbrvnat.bst'
-%% A modification of `abbrv.bst' for use with natbib package,
-%% further modified for stacking names with \namestack
+%% File: `abbrvnat.bst'
+%% A modification of `abbrv.bst' for use with natbib package 
 %%
-%% Copyright 2023 Erik Demaine
 %% Copyright 1993-2007 Patrick W Daly
 %% Max-Planck-Institut f\"ur Sonnensystemforschung
 %% Max-Planck-Str. 2
@@ -213,15 +211,8 @@ FUNCTION {emphasize}
   if$
 }
 
-% Wrap top of stack in \namestack{...}
-FUNCTION {namestack}
-{ "\namestack{" swap$ * "}" *
-}
-
 INTEGERS { nameptr namesleft numnames }
 
-% Format list of names (author or editor) on top of stack
-% for inclusion in bibitem
 FUNCTION {format.names}
 { 's :=
   #1 'nameptr :=
@@ -231,10 +222,14 @@ FUNCTION {format.names}
     { s nameptr "{f.~}{vv~}{ll}{, jj}" format.name$ 't :=
       nameptr #1 >
         { namesleft #1 >
-            { "; " * t * }
-            { t "others" =
+            { ", " * t * }
+            { numnames #2 >
+                { "," * }
+                'skip$
+              if$
+              t "others" =
                 { " et~al." * }
-                { "; " * t * }
+                { " and " * t * }
               if$
             }
           if$
@@ -245,9 +240,6 @@ FUNCTION {format.names}
       namesleft #1 - 'namesleft :=
     }
   while$
-  namestack
-  % Append parenthetical number of names
-  " (" * numnames int.to.str$ * ")" *
 }
 
 FUNCTION {format.key}
@@ -311,8 +303,6 @@ FUNCTION {format.title}
   if$
 }
 
-% Format list of names (author or editor) on top of stack
-% for inclusion in natbib.sty label (just last names)
 FUNCTION {format.full.names}
 {'s :=
   #1 'nameptr :=
@@ -320,9 +310,23 @@ FUNCTION {format.full.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { s nameptr
-      "{vv }{ll}" format.name$ 't :=
+      "{vv~}{ll}" format.name$ 't :=
       nameptr #1 >
-        { "; " * t * }
+        {
+          namesleft #1 >
+            { ", " * t * }
+            {
+              numnames #2 >
+                { "," * }
+                'skip$
+              if$
+              t "others" =
+                { " et~al." * }
+                { " and " * t * }
+              if$
+            }
+          if$
+        }
         't
       if$
       nameptr #1 + 'nameptr :=
@@ -369,21 +373,15 @@ FUNCTION {make.full.names}
   if$
 }
 
-% Output natbib.sty label directly, without storing in a variable
-% so won't overflow with many names
-FUNCTION {write.label}
-{
-  make.full.names write$
-  "(" write$
-  year write$
-  ")" write$
-}
-
 FUNCTION {output.bibitem}
 { newline$
   "\bibitem[" write$
-  write.label
-  "]{" write$
+  label write$
+  ")" make.full.names duplicate$ short.list =
+     { pop$ }
+     { * }
+   if$
+  "]{" * write$
   cite$ write$
   "}" write$
   newline$
@@ -1192,14 +1190,17 @@ FUNCTION {calc.short.authors}
   'short.list :=
 }
 
-% Compute label for sorting purposes
-% (Not used for actual output because it can overflow)
 FUNCTION {calc.label}
-{
-  make.full.names
-  "(" *
-  year *
-  ")" *
+{ calc.short.authors
+  short.list
+  "("
+  *
+  year duplicate$ empty$
+  short.list key field.or.null = or
+     { pop$ "" }
+     'skip$
+  if$
+  *
   'label :=
 }
 
@@ -1419,7 +1420,6 @@ FUNCTION {begin.bib}
   write$ newline$
   "  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi"
   write$ newline$
-  "\bibitem[AAAA(2023)]{paren-description}(numbers in parentheses indicate number of authors)" write$ newline$
 }
 
 EXECUTE {begin.bib}
