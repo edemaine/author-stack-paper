@@ -46,6 +46,13 @@
 }
 \usepackage{multicol} % enables multicols=2
 
+% Put figures and text together
+\def\textfraction{0.01}
+\def\topfraction{0.99}
+\def\bottomfraction{0.99}
+\def\floatpagefraction{0.99}
+\def\dblfloatpagefraction{0.99}
+
 \def\BibTeX{\textsc{Bib}\TeX}
 
 %% OLD:
@@ -409,9 +416,7 @@ like so:
   \namestack{Erik Demaine; Martin Demaine}
 \end{center}
 
-\lstinputlisting[float=*,caption={\LaTeX\ source code for \texttt{\textbackslash namestack}},label=lst:namestack]{namestack.tex}
-
-Listing~\ref{lst:namestack} shows the source code for this macro.
+Listing~\ref{lst:namestack} below shows the source code for this macro.
 The main idea is to render each name (into a \TeX\ horizontal box),
 and stack them vertically (in a \TeX\ vertical box)
 with a negative one-line vertical space in between consecutive names.
@@ -428,8 +433,8 @@ The example above effectively becomes:
 This main content gets wrapped in three additional components:
 %
 \begin{enumerate}
-\item \lstinline|\texttransparent{0.666}{...}| (from \texttt{transparent.sty})
-  to make the names semi-transparent at opacity $2/3$.
+\item \lstinline|\textopacity{0.666}{...}| (implemented via \texttt{pgf.sty})
+  to make each name semi-transparent at opacity $2/3$.
   The opacity can also be overridden via an optional argument, as in
   \lstinline|\namestack[0.9]{...}|.
 \item \lstinline|\pdftooltip| (from \texttt{pdfcomment.sty})
@@ -445,18 +450,7 @@ automatically wrap the ``name'' portion of a citation in
 We also need to disable hyperlinks on the name portion of each citation,
 to avoid covering the tooltip with another PDF annotation.
 
-\lstinputlisting[float=*,caption={\LaTeX\ code providing additional support for \texttt{natbib.sty}},label=lst:natbib]{stack-natbib.tex}
-
 \subsection{\BibTeX}
-
-% Minimal BibTeX mode
-\lstset{
-  alsoletter={$,.},
-  keywords={FUNCTION, if$, while$, for$, swap$, num.names$, format.name$, int.to.str$, write$, newline$, cite$},
-  string=[b]",
-  % Emphasizing function names but not variables
-  emph={namestack, format.names, format.full.names, make.full.names, calc.label, write.label, output.bibitem, before.all, output.state},
-}
 
 We modified the \texttt{abbrvnat.bst} \BibTeX\ bibliography style requested by
 this proceedings to work with \lstinline|\namestack|;
@@ -471,6 +465,83 @@ Second, we output \texttt{natbib.sty}-compatible labels with semicolons
 between all author names (instead of just the first author name followed by
 ``et al.''), so that the code in Listing~\ref{lst:natbib} constructs the
 appropriate author stack.
+
+\subsection{HTML}
+
+We also give a proof-of-concept that the same style of rendering is
+possible in HTML.  Figure~\ref{fig:html} shows a rendering
+of the HTML code in Listing~\ref{lst:html}.
+CSS Grid makes implementing an overlapping stack quite easy:
+by placing each name in the same grid cell,
+the cell automatically grows to the maximum size of all names.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=0.2]{figs/html.png}
+  \caption{Rendering of HTML in Listing~\ref{lst:html}.
+    Screenshot from Google Chrome 111 on Windows 11.}
+  \label{fig:html}
+\end{figure}
+
+\begingroup
+\lstset{
+  language=HTML,
+  alsoletter={-},
+  otherkeywords={grid-row, grid-column, opacity, display, inline-grid},
+  emph={stack, name}, % not working because of tag option
+  identifierstyle=,
+  morecomment=[s]{/*}{*/}
+}
+\lstinputlisting[caption={HTML source code illustrating a name stack},label=lst:html]{stack.html}
+\endgroup
+
+\section{Future Work}
+
+One limitation of our new standard for listing names is that longer surnames
+gain some bias.
+For example, ``Olds'' (the second half of ``Mitchell-Olds'')
+is clearly visible in \citet{currency-fluctuation}.
+Will this lead to longer and longer academic surnames in the future?
+Arguably, longer names already receive some bias without our system,
+as they take up more relative space in the bibliography.
+Yet in practice so far, most surnames seem to have a similar length.
+The readability of a \emph{suffix} of a surname also does not seem to
+advantage the actual name much.
+
+A final issue is that overlapping name stacks are not easy to read.
+It may be possible to write names in a way that has no first name
+but still makes all names clearly readable.
+For example, a circle has no beginning or end, so arranging the names
+in a circular pattern avoids arranging any author ``first''.
+Figure~\ref{fig:circles} shows some initial experiments in this direction.
+It remains unsolved how to fit such circular arrangements
+in with the rest of a text document, which feels inherently sequential.
+Circular arrangements also seem difficult to apply to small numbers of
+authors such as $2$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figs/circles}
+  \caption{Circular arrangements of the authors of
+    \citet{LessThanEdgeMatching_JIP}.  Drawn in Inkscape
+    using Circular Align and Distribute, onto a circle of
+    radius 50 (left) or 200 (right); followed by $90^\circ$ rotation
+    (left); and rotating $180^\circ$ to make names upright (bottom).}
+  \label{fig:circles}
+\end{figure}
+
+\lstinputlisting[float=*,caption={\LaTeX\ source code for \texttt{\textbackslash namestack}},label=lst:namestack]{namestack.tex}
+
+\lstinputlisting[float=*,caption={\LaTeX\ code providing additional support for \texttt{natbib.sty}},label=lst:natbib]{stack-natbib.tex}
+
+% Minimal BibTeX mode
+\lstset{
+  alsoletter={$,.},
+  keywords={FUNCTION, if$, while$, for$, swap$, num.names$, format.name$, int.to.str$, write$, newline$, cite$},
+  string=[b]",
+  % Emphasizing function names but not variables
+  emph={namestack, format.names, format.full.names, make.full.names, calc.label, write.label, output.bibitem, before.all, output.state},
+}
 
 \begin{lstlisting}[float=*,caption={Excerpts from \BibTeX\ style file, including all changed functions from \texttt{abbrvnat.bst}},label=lst:bst,multicols=2]
 %% File: `stack-abbrvnat.bst'
@@ -571,67 +642,6 @@ FUNCTION {output.bibitem}
   before.all 'output.state :=
 }
 \end{lstlisting}
-
-\subsection{HTML}
-
-\lstset{
-  language=HTML,
-  alsoletter={-},
-  otherkeywords={grid-row, grid-column, opacity, display, inline-grid},
-  emph={stack, name}, % not working because of tag option
-  identifierstyle=,
-  morecomment=[s]{/*}{*/}
-}
-
-We also give a proof-of-concept that the same style of rendering is
-possible in HTML.  Figure~\ref{fig:html} shows a rendering
-of the HTML code in Listing~\ref{lst:html}.
-CSS Grid makes implementing an overlapping stack quite easy:
-by placing each name in the same grid cell,
-the cell automatically grows to the maximum size of all names.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[scale=0.2]{figs/html.png}
-  \caption{Rendering of HTML in Listing~\ref{lst:html}.
-    Screenshot from Google Chrome 111 on Windows 11.}
-  \label{fig:html}
-\end{figure}
-
-\lstinputlisting[caption={HTML source code illustrating a name stack},label=lst:html]{stack.html}
-
-\section{Future Work}
-
-One limitation of our new standard for listing names is that longer surnames
-gain some bias.
-For example, ``Olds'' (the second half of ``Mitchell-Olds'')
-is clearly visible in \citet{currency-fluctuation}.
-Will this lead to longer and longer academic surnames in the future?
-Arguably, longer names already receive some bias without our system,
-as they take up more relative space in the bibliography.
-Yet in practice so far, most surnames seem to have a similar length.
-The readability of a \emph{suffix} of a surname also does not seem to
-advantage the actual name much.
-
-A final issue is that overlapping name stacks are not easy to read.
-It may be possible to write names in a way that has no first name
-but still makes all names clearly readable.
-For example, a circle has no beginning or end, so arranging the names
-in a circular pattern avoids arranging any author ``first''.
-Figure~\ref{fig:circles} shows some initial experiments in this direction.
-It remains unsolved how to fit such circular arrangements
-in with the rest of a text document, which feels inherently sequential.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figs/circles}
-  \caption{Circular arrangements of the authors of
-    \citet{LessThanEdgeMatching_JIP}.  Drawn in Inkscape
-    using Circular Align and Distribute, onto a circle of
-    radius 50 (left) or 200 (right); followed by $90^\circ$ rotation
-    (left); and rotating $180^\circ$ to make names upright (bottom).}
-  \label{fig:circles}
-\end{figure}
 
 \bibliography{paper}
 \bibliographystyle{stack-abbrvnat}

@@ -26,6 +26,7 @@
   \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
   % Split into first component (##1) up to separator (#1), and rest (##2):
   \def\textstack@step##1#1##2\@eol{%
+    % Build \hbox for this component (##1) with specified opacity (#2)
     \hbox{\textopacity{#2}{\ignorespaces ##1\unskip}}%
     \ifx\@eol##2\@eol\else
       % More steps: unwind vertical space and continue
