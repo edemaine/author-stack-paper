@@ -108,7 +108,7 @@ And what if the contributions are roughly equal?
 
 In some disciplines, the order has additional codified meanings.
 For example, many natural sciences use the last author position to indicate the
-research supervisor (principle investigator) whose lab housed the work.
+research supervisor (principal investigator) whose lab housed the work.
 But what if multiple people serve that role, as research becomes
 increasingly collaborative?
 
@@ -233,7 +233,7 @@ Our proposed solution is a new standard for listing the authors of a paper:
 instead of any ordered list, write all author names on top of each other.
 For example, instead of ``Erik Demaine and Martin Demaine'' (alphabetical),
 we write \namestack{Erik Demaine; Martin Demaine}.
-In this way, we achieve the true ideal of an unordered list of equal authors,
+In this way, we achieve the true ideal of an unordered set of equal authors,
 where every author comes first.
 
 In settings where authors did not contribute roughly equally, we can generalize
@@ -268,10 +268,11 @@ Figure~\ref{fig:tooltip}.
 %also a link to the bibliography, so readers must click on the link and then
 %hover over the name stack in the bibliography; hopefully this extra step
 %will be unnecessary in the future.
-This feature works on all desktop PDF viewers we have tested,
-except Chrome%
-\footnote{See \url{https://bugs.chromium.org/p/chromium/issues/detail?id=1122489}}%
-, but does not work on mobile devices we tested
+This feature works on many desktop PDF viewers (e.g., Acrobat, Evince, Firefox,
+VSCode), but notably not Chrome%
+\footnote{See \url{https://bugs.chromium.org/p/chromium/issues/detail?id=1122489}},
+Edge, Safari, or MacOS Preview.
+It also does not work on mobile devices we tested
 (probably because they lack a natural notion of ``hovering'').
 Because tooltips and links are both types of PDF annotations, they would
 conflict with each other if used together, so we had to remove hyperlinks
@@ -296,8 +297,11 @@ from names; the years remain clickable links to the bibliography.
 
 Second, copying and pasting the author stack (together with any surrounding
 text) into another document should reveal the authors in their original order,
-using PDF's accessibility feature.  This makes it easy to quote portions of
-a paper, including any citations, with or without author stacks.
+using PDF's accessibility feature.
+This makes it easy to quote portions of a paper,
+including any citations, with or without author stacks.
+This feature is currently supported by only a few PDF viewers,
+including Acrobat, Chrome, Edge, and Evince.
 
 \subsection{Opacity}
 
@@ -582,7 +586,8 @@ FUNCTION {output.bibitem}
   alsoletter={-},
   otherkeywords={grid-row, grid-column, opacity, display, inline-grid},
   emph={stack, name}, % not working because of tag option
-  identifierstyle=
+  identifierstyle=,
+  morecomment=[s]{/*}{*/}
 }
 
 We also give a proof-of-concept that the same style of rendering is
