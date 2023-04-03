@@ -6,6 +6,8 @@ This repository contains the source code for the following (humorous) paper:
 > "Every author as first author".
 > [Proceedings of SIGTBD](http://sigtbd.csail.mit.edu/#archives), 2023.
 
+## [PDF](http://erikdemaine.org/papers/NameStack_SIGTBD2023/paper.pdf)
+
 ## Abstract
 
 We propose a new standard for writing author names on papers
