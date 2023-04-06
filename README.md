@@ -8,6 +8,8 @@ This repository contains the source code for the following (humorous) paper:
 
 ## [PDF](http://erikdemaine.org/papers/NameStack_SIGTBD2023/paper.pdf)
 
+## [Talk slides](https://github.com/edemaine/author-stack-talk)
+
 ## Abstract
 
 We propose a new standard for writing author names on papers
@@ -32,6 +34,8 @@ show several examples; and discuss further advantages.
   [abbrvnat.bst](http://tug.ctan.org/tex-archive/macros/latex/contrib/natbib/abbrvnat.bst)
   to stack author names in all entries.
 * [stack.html](stack.html) demos name stacks in HTML.
+  See [the talk slides](https://github.com/edemaine/author-stack-talk)
+  for a more thorough example.
 
 All of the above code (but not the text itself) is distributed under an
 [MIT License](https://opensource.org/license/mit/).
