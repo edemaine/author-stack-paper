@@ -21,16 +21,21 @@
 % plus a PDF tooltip, copy/paste override, and specified opacity.
 % Loop iteration based on https://tex.stackexchange.com/a/159177/245104
 \makeatletter
+\newlength\textstack@height
 \newcommand\textstack[3][;]{%
   % Append separator (#1) and \@eol to end of input:
   \def\textstack@append##1{\expandafter\textstack@step##1#1\@eol}%
   % Split into first component (##1) up to separator (#1), and rest (##2):
   \def\textstack@step##1#1##2\@eol{%
-    % Build \hbox for this component (##1) with specified opacity (#2)
-    \hbox{\textopacity{#2}{\ignorespaces ##1\unskip}}%
+    % Build \hbox for this component (##1) with specified opacity (#2),
+    % while saving height in \textstack@height
+    \setbox1=\hbox{\textopacity{#2}{\ignorespaces ##1\unskip}}%
+    \setlength\textstack@height{\ht1}%
+    \box1%
     \ifx\@eol##2\@eol\else
       % More steps: unwind vertical space and continue
-      \vskip-\baselineskip
+      \nointerlineskip
+      \vskip-\textstack@height
       \textstack@step##2\@eol
     \fi}%
   % Tooltip with full author list (#3)
